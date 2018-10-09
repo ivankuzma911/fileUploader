@@ -1,0 +1,18 @@
+version: '2'
+services:
+  app:
+    build: ./app
+    volumes:
+     - ./app:/usr/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://admin:pass@postgres/main
+  postgres:
+    image: postgres:9.6.2-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: main
