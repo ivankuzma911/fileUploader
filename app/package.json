@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch .",
+    "dev": "node_modules/.bin/nodemon --watch .",
     "lint": "node_modules/.bin/eslint app"
   },
   "keywords": [],
@@ -14,15 +14,14 @@
   "dependencies": {
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "koa": "^2.5.3",
-    "koa-better-body": "^3.0.4",
-    "koa-body": "^4.0.4",
     "koa-combine-routers": "^4.0.2",
     "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",
     "nodemon": "^1.18.4",
     "pg": "^7.5.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.39.0"
+    "sequelize": "^4.39.0",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
