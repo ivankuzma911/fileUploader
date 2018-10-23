@@ -1,8 +1,6 @@
 const Koa = require('koa');
 const router = require('./routes');
 
-const test = require('./models/file');
-
 const app = new Koa();
 
 app.use(router());

@@ -10,8 +10,14 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgres://admin:pass@postgres/main
+      DATABASE: main
+      DATABASE_USER: admin
+      DATABASE_PASSWORD: pass
+      DATABASE_HOST: postgres
   postgres:
     image: postgres:9.6.2-alpine
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: pass
