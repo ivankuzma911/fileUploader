@@ -10,7 +10,8 @@ const sequelize = new Sequelize(process.env.DATABASE,
   });
 
 
-const File = require('./files')(Sequelize, sequelize);
+const File = require('./file')(Sequelize, sequelize);
+const User = require('./user')(Sequelize, sequelize);
 
 sequelize.sync();
 
@@ -19,6 +20,7 @@ const db = {
   sequelize,
   models: {
     File,
+    User,
   },
 };
 

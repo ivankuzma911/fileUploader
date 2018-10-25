@@ -5,4 +5,4 @@ WORKDIR /usr/app
 COPY . .
 RUN npm install && npm install -g pm2
 
-CMD [ "npm", "run", "dev" ]
+CMD ["pm2-runtime", "ecosystem.config.js"]
