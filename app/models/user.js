@@ -1,6 +1,4 @@
-
-module.exports = (Types, sequelize) => sequelize.define('files', {
-	file: { type: Types.BLOB(), allowNull: false },
-	name: { type: Types.STRING },
+module.exports = (Types, sequelize) => sequelize.define('users', {
+  username: { type: Types.STRING, unique: true },
+  password: { type: Types.STRING, allowNull: false },
 });
-  

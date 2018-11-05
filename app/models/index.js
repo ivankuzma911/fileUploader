@@ -9,9 +9,10 @@ const sequelize = new Sequelize(process.env.DATABASE,
     logging: false,
   });
 
-
 const File = require('./file')(Sequelize, sequelize);
 const User = require('./user')(Sequelize, sequelize);
+
+User.hasMany(File, { foreignKey: 'user_id', sourceKey: 'id' });
 
 sequelize.sync();
 
