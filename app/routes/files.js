@@ -8,13 +8,13 @@ const upload = multer({ storage });
 
 const router = new Router({ prefix: '/file' });
 
-router.post('/', verifyToken, upload.single('file'), async (ctx) => {
-  await files.upload({
-    userId: ctx.request.userId,
-    buffer: ctx.request.req.file.buffer,
-    name: ctx.request.req.file.originalname,
-  });
-  ctx.body = 'File uploaded';
-});
+router.get('/', verifyToken, files.list);
+router.get('/:id', verifyToken, files.getById);
+
+router.post('/encodeFiles', verifyToken, files.encodeFiles);
+router.post('/', verifyToken, upload.single('file'), files.upload);
+
+
+router.delete('/:id', verifyToken, files.deleteById);
 
 module.exports = router;

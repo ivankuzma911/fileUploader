@@ -14,6 +14,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "eslint-plugin-jsx-a11y": "^6.1.2",
+    "install": "^0.12.2",
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.5.3",
     "koa-body": "^4.0.4",
@@ -23,9 +24,11 @@
     "koa-request-schema": "^2.0.0-alpha.2",
     "koa-router": "^7.4.0",
     "nodemon": "^1.18.4",
+    "npm": "^6.4.1",
     "pg": "^7.5.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.39.0",
+    "sequelize-cursor-pagination": "^1.2.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {

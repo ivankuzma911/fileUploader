@@ -1,3 +1,4 @@
+const withPagination = require('sequelize-cursor-pagination');
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DATABASE,
@@ -11,6 +12,8 @@ const sequelize = new Sequelize(process.env.DATABASE,
 
 const File = require('./file')(Sequelize, sequelize);
 const User = require('./user')(Sequelize, sequelize);
+
+withPagination()(File);
 
 User.hasMany(File, { foreignKey: 'user_id', sourceKey: 'id' });
 
