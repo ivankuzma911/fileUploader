@@ -1,10 +1,12 @@
 
 const jwt = require('../libs/jwt');
+const logger = require('../libs/logger');
 
 const errorHandler = () => async (ctx, next) => {
   try {
     await next();
   } catch (err) {
+    logger.error(err);
     ctx.status = err.statusCode || err.status || 500;
     ctx.body = {
       message: err.message,

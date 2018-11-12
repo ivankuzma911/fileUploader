@@ -9,9 +9,9 @@ const upload = multer({ storage });
 const router = new Router({ prefix: '/file' });
 
 router.get('/', verifyToken, files.list);
-router.get('/:id', verifyToken, files.getById);
 
 router.post('/encodeFiles', verifyToken, files.encodeFiles);
+router.post('/:id', verifyToken, files.getById);
 router.post('/', verifyToken, upload.single('file'), files.upload);
 
 

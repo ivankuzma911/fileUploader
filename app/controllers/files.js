@@ -1,5 +1,6 @@
 const { File } = require('../models').models;
 const { encrypt, decrypt } = require('../libs/utilities');
+const { pg } = require('../config');
 
 const list = async (ctx) => {
   const { userId } = ctx.request;
@@ -34,16 +35,24 @@ const deleteById = async (ctx) => {
 };
 
 const getById = async (ctx) => {
-  const { userId } = ctx.request;
+  const { userId, body } = ctx.request;
   const fileId = ctx.params.id;
 
-  const file = await File.findAll({
+  if (!(body && body.secret)) throw new Error('Provide secret');
+
+  const result = await File.findAll({
     where: { user_id: userId, id: fileId },
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'file'],
     limit: 1,
   });
 
-  ctx.body = file;
+  const { id, name, file } = result.pop();
+
+  ctx.body = {
+    id,
+    name,
+    file: Buffer.from(decrypt(file, body.secret)).toString('base64'),
+  };
 };
 
 const encodeFiles = async (ctx) => {
@@ -54,20 +63,31 @@ const encodeFiles = async (ctx) => {
   let lastId = 0;
 
   do {
-    const result = await File.paginate({ where: { user_id: { $eq: userId }, id: { $gte: lastId } }, limit: 2 });
-    const { results: rows, cursors } = result;
+    const files = await File.paginate({
+      where: {
+        user_id: { $eq: userId },
+        id: { $gte: lastId },
+        encoded: { $eq: false },
+      },
+      limit: pg.encodeFilesChunkSize,
+    });
+
+    const { results: rows, cursors } = files;
 
     const queries = rows.map((row) => {
       const file = encrypt(row.file, secret);
       return File.update(
-        { file },
-        { where: { id: row.id } },
+        { file, encoded: true },
+        { where: { id: row.id, encoded: false } },
       );
     });
 
     await Promise.all(queries);
 
-    lastId = rows[rows.length - 1].id;
+    if (rows.length) {
+      lastId = rows[rows.length - 1].id;
+    }
+
     hasNext = cursors.hasNext;
   } while (hasNext);
   ctx.body = 'Encoded all files';

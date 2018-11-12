@@ -3,16 +3,16 @@ const crypto = require('crypto');
 
 const encrypt = (data, secret) => {
   const cipher = crypto.createCipher('aes-256-cbc', secret);
-  const crypted = cipher.update(data, 'utf-8', 'hex');
+  const crypted = Buffer.concat([cipher.update(data), cipher.final()]);
 
-  return `${crypted}${cipher.final('hex')}`;
+  return crypted;
 };
 
 const decrypt = (data, secret) => {
   const decipher = crypto.createDecipher('aes-256-cbc', secret);
   try {
-    const decrypted = decipher.update(data, 'hex', 'utf-8');
-    return `${decrypted}${decipher.final('utf-8')}`;
+    const decrypted = Buffer.concat([decipher.update(data), decipher.final()]);
+    return decrypted;
   } catch (e) {
     return null;
   }
