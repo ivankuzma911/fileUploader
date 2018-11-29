@@ -23,6 +23,7 @@
     "koa-multer": "^1.0.2",
     "koa-request-schema": "^2.0.0-alpha.2",
     "koa-router": "^7.4.0",
+    "minimist": "^1.2.0",
     "nodemon": "^1.18.4",
     "npm": "^6.4.1",
     "pg": "^7.5.0",

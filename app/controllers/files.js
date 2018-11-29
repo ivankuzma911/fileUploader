@@ -1,6 +1,7 @@
+const { fork } = require('child_process');
 const { File } = require('../models').models;
-const { encrypt, decrypt } = require('../libs/utilities');
-const { pg } = require('../config');
+const { decrypt } = require('../libs/utilities');
+const logger = require('../libs/logger');
 
 const list = async (ctx) => {
   const { userId } = ctx.request;
@@ -42,54 +43,43 @@ const getById = async (ctx) => {
 
   const result = await File.findAll({
     where: { user_id: userId, id: fileId },
-    attributes: ['id', 'name', 'file'],
+    attributes: ['id', 'name', 'file', 'status'],
     limit: 1,
   });
 
-  const { id, name, file } = result.pop();
+  const {
+    id,
+    name,
+    file,
+    status,
+  } = result.pop();
 
   ctx.body = {
     id,
     name,
-    file: Buffer.from(decrypt(file, body.secret)).toString('base64'),
+    file: status !== 'processing' ? Buffer.from(decrypt(file, body.secret)).toString('base64') : null,
+    status,
   };
+};
+
+const runFork = (userId, secret) => {
+  const args = [
+    '--userId', userId,
+    '--secret', secret,
+  ];
+
+  const forked = fork('./scripts/encode.js', args);
+
+  forked.on('error', logger.error);
+  forked.on('close', logger.info);
 };
 
 const encodeFiles = async (ctx) => {
   const { userId } = ctx.request;
   const { secret } = ctx.request.body;
 
-  let hasNext = true;
-  let lastId = 0;
+  runFork(userId, secret);
 
-  do {
-    const files = await File.paginate({
-      where: {
-        user_id: { $eq: userId },
-        id: { $gte: lastId },
-        encoded: { $eq: false },
-      },
-      limit: pg.encodeFilesChunkSize,
-    });
-
-    const { results: rows, cursors } = files;
-
-    const queries = rows.map((row) => {
-      const file = encrypt(row.file, secret);
-      return File.update(
-        { file, encoded: true },
-        { where: { id: row.id, encoded: false } },
-      );
-    });
-
-    await Promise.all(queries);
-
-    if (rows.length) {
-      lastId = rows[rows.length - 1].id;
-    }
-
-    hasNext = cursors.hasNext;
-  } while (hasNext);
   ctx.body = 'Encoded all files';
 };
 

@@ -26,6 +26,7 @@ const db = {
     File,
     User,
   },
+  Op: Sequelize.Op,
 };
 
 module.exports = db;
