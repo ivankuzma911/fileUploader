@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
+const cors = require('@koa/cors');
 
 const router = require('./routes');
 const logger = require('./libs/logger');
@@ -10,6 +11,7 @@ const app = new Koa();
 
 app.use(bodyParser());
 app.use(errorHandler());
+app.use(cors());
 
 app.use(router());
 
