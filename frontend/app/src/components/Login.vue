@@ -9,6 +9,7 @@
 
 <script>
 import config from '../config'
+import axios from 'axios'
 
 export default {
   name: 'Register',
@@ -25,24 +26,19 @@ export default {
       const { username, password } = this.input
 
       if (!username.length || !password.length) {
-        console.log('Please fulfill all fields')
+        alert('Please fulfill all fields')
         return
       }
 
-      const requestOptions = {
+      axios({
+        url: `${config.apiUrl}/users/login`,
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      }
-
-      fetch(`${config.apiUrl}/users/login`, requestOptions)
-        .then(response => response.text())
-        .then(token => {
-          localStorage.setItem('token', token)
-          this.$router.push('files')
-        }
-        )
-        .catch(e => console.log(e))
+        data: { username, password }
+      }).then(response => {
+        console.log(response);
+        localStorage.setItem('token', response.data)
+        this.$router.push('files')
+      }).catch(e => console.log(e))
     }
   }
 }

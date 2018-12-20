@@ -1,25 +1,30 @@
 <template>
-    <div id="login">
-      <input type="password" v-model="secret" />
-      <button v-on:click="encodeFiles()" >Encode Files</button>
-      <div>
-        <div >
-          <label>File
-            <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+    <div id="files">
+      <div class="encodeFiles">
+         <label>Secret key
+             <input type="password" v-model="secret" />
           </label>
-          <button v-on:click="submitFile()">Submit</button>
-        </div>
+        <button v-on:click="encodeFiles()" >Encode Files</button>
       </div>
+
+      <div class="uploadFile">
+        <label>File
+          <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+        </label>
+        <button v-on:click="submitFile()">Submit</button>
+      </div>
+
+      <div class="filesList">
         <ul id="example-1" class="list">
           <li v-for="(file, index) in files" v-bind:key="index">
             {{ file.name }}
             <input type="password" v-model="passwords[index]" />
             <img v-if="file.file" v-bind:src="file.file" />
-            {{file.file}}
             <button v-on:click="viewFile(index, file.id)" >View</button>
             <button v-on:click="deleteFile(file)" >x</button>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
     </div>
 </template>
 
@@ -142,9 +147,6 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
 ul {
   list-style-type: none;
   padding: 0;
@@ -159,5 +161,11 @@ li {
 }
 a {
   color: #42b983;
+}
+.encodeFiles {
+  float: left;
+}
+.uploadFile {
+  float: right;
 }
 </style>

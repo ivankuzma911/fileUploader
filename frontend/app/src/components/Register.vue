@@ -10,6 +10,7 @@
 
 <script>
 import config from '../config'
+import axios from 'axios'
 
 export default {
   name: 'Register',
@@ -26,24 +27,21 @@ export default {
     register () {
       const { username, password, confirmPassword } = this.input
       console.log(username.length, password.length)
-      if (!username.length || !password.length || !confirmPassword.length) {
-        console.log('Please fulfill all fields')
-        return
-      }
-      if (password !== confirmPassword) {
-        console.log('Password and confirm password are not equal')
-        return
-      }
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, password_confirmation: confirmPassword })
+
+      const validFields = username.length && password.length && confirmPassword.length
+      const equalPassword = password === confirmPassword
+
+      if (!validFields || !equalPassword) {
+        return alert('Input not valid')
       }
 
-      fetch(`${config.apiUrl}/users/register`, requestOptions)
-        .then((res) => {
-          this.$router.push('login')
-        }).catch(e => console.log(e))
+      axios({
+        url: `${config.apiUrl}/users/register`,
+        method: 'POST',
+        data: { username, password, password_confirmation: confirmPassword }
+      }).then(response => {
+        this.$router.push('login')
+      }).catch(e => console.log(e))
     }
   }
 }
