@@ -1,5 +1,15 @@
 <template>
     <div id="login">
+      <input type="password" v-model="secret" />
+      <button v-on:click="encodeFiles()" >Encode Files</button>
+      <div>
+        <div >
+          <label>File
+            <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+          </label>
+          <button v-on:click="submitFile()">Submit</button>
+        </div>
+      </div>
         <ul id="example-1" class="list">
           <li v-for="(file, index) in files" v-bind:key="index">
             {{ file.name }}
@@ -16,7 +26,7 @@
 <script>
 import Vue from 'vue'
 import config from '../config'
-import File from './File'
+import axios from 'axios'
 
 export default {
   name: 'Register',
@@ -26,13 +36,45 @@ export default {
   data () {
     return {
       files: [],
-      passwords: []
+      passwords: [],
+      file: '',
+      secret: ''
     }
   },
   created () {
     this.fetchData()
   },
   methods: {
+    handleFileUpload () {
+      this.file = this.$refs.file.files[0]
+    },
+    encodeFiles () {
+      let formData = new FormData()
+      formData.append('secret', this.secret)
+      axios({
+        url: 'http://localhost:3000/file/encodeFiles',
+        method: 'post',
+        data: {
+          secret: this.secret
+        },
+        headers: {
+          token: localStorage.getItem('token')
+        }
+      })
+    },
+    submitFile () {
+      let formData = new FormData()
+      formData.append('file', this.file)
+      axios.post('http://localhost:3000/file',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            token: localStorage.getItem('token')
+          }
+        }
+      )
+    },
     fetchData () {
       const requestOptions = {
         method: 'GET',
@@ -68,11 +110,6 @@ export default {
         .then(result => {
           const findIndex = this.files.findIndex(({id}) => id === fileId)
           if (findIndex >= 0) {
-            // const files = this.files
-            // //@TODO: add watch method
-            // //force replace all files
-            // files[findIndex] = { ...files[findIndex], file: `data:image/png;base64,${result.file}` }
-            // this.files = {...files}
             const newFileData = { ...this.files[findIndex], file: `data:image/png;base64,${result.file}` }
             Vue.set(this.files, findIndex, newFileData)
           }
