@@ -1,5 +1,10 @@
 version: '2'
 services:
+  reverseproxy:
+    build: ./reverseproxy
+    ports:
+      - 8001:8001
+
   app:
     build: ./app
     volumes:
@@ -15,6 +20,13 @@ services:
       DATABASE_PASSWORD: pass
       DATABASE_HOST: postgres
       NODE_ENV: development
+
+  front:
+    build: ./frontend/app
+    volumes:
+     - ./frontend/app:/usr/app
+    ports:
+      - "8080:8080"
   postgres:
     image: postgres:9.6.2-alpine
     ports:

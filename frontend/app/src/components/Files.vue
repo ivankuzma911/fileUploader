@@ -57,7 +57,7 @@ export default {
       let formData = new FormData()
       formData.append('secret', this.secret)
       axios({
-        url: 'http://localhost:3000/file/encodeFiles',
+        url: `${config.apiUrl}/file/encodeFiles`,
         method: 'post',
         data: {
           secret: this.secret
@@ -70,7 +70,7 @@ export default {
     submitFile () {
       let formData = new FormData()
       formData.append('file', this.file)
-      axios.post('http://localhost:3000/file',
+      axios.post(`${config.apiUrl}/file`,
         formData,
         {
           headers: {

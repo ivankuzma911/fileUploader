@@ -6,7 +6,7 @@ const { verifyToken } = require('../middlewares');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-const router = new Router({ prefix: '/file' });
+const router = new Router({ prefix: '/api/file' });
 
 router.get('/', verifyToken, files.list);
 
